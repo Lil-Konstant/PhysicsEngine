@@ -6,11 +6,11 @@ using namespace glm;
 class PhysicsObject
 {
 protected:
-	PhysicsObject();
+	PhysicsObject() {}
 
 public:
 	virtual void fixedUpdate(vec2 gravity, float timeStep) = 0;
 	virtual void draw() = 0;
-	virtual void resetPosition() {};
+	virtual void resetPosition() {}
 };
 

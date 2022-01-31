@@ -1,7 +1,10 @@
 #pragma once
 
 #include "Application.h"
+#include "glm/ext.hpp"
+#include "Gizmos.h"
 #include "Renderer2D.h"
+#include "PhysicsScene.h"
 
 class PhysicsApp : public aie::Application {
 public:
@@ -23,4 +26,5 @@ protected:
 	aie::Font*			m_font;
 
 	float m_timer;
+	PhysicsScene* m_physicsScene;
 };

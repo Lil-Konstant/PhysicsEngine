@@ -3,12 +3,13 @@
 // Include the OpenGL maths for vec2's and the std lib vectors
 #include "glm/vec2.hpp"
 #include <vector>
+#include "PhysicsObject.h"
 
 using namespace std;
 using namespace glm;
 
-// Forward declaration of PhysicsObject
-class PhysicsObject;
+//// Forward declaration of PhysicsObject
+//class PhysicsObject;
 
 class PhysicsScene
 {
