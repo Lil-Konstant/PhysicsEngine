@@ -13,9 +13,11 @@ PhysicsScene::~PhysicsScene()
 
 void PhysicsScene::addActor(PhysicsObject* actor)
 {
+	m_actors.push_back(actor);
 }
 
 void PhysicsScene::removeActor(PhysicsObject* actor)
 {
+	remove(m_actors.begin(), m_actors.end(), actor);
 }
 
