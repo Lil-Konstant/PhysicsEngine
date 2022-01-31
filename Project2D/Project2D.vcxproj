@@ -174,9 +174,11 @@
   <ItemGroup>
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PhysicsScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Physics.h" />
+    <ClInclude Include="PhysicsScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
