@@ -41,19 +41,7 @@ void PhysicsScene::update(float dt)
 		accumulatedTime -= m_timeStep;
 	}
 
-	// Check for collisions between all actors, assume they are spheres
-	int actorCount = m_actors.size();
-	for (int outer = 0; outer < actorCount - 1; outer++)
-	{
-		for (int inner = outer + 1; inner < actorCount; inner++)
-		{
-			PhysicsObject* object1 = m_actors[outer];
-			PhysicsObject* object2 = m_actors[inner];
-
-			// assume they are both spheres and check for collision between the two
-			sphere2Sphere(object1, object2);
-		}
-	}
+	checkForCollisions();
 }
 
 void PhysicsScene::draw()
@@ -62,6 +50,44 @@ void PhysicsScene::draw()
 	{
 		pActor->draw();
 	}
+}
+
+typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
+static fn collisionFunctionArray[] =
+{
+	PhysicsScene::plane2Plane, PhysicsScene::plane2Sphere,
+	PhysicsScene::sphere2Plane, PhysicsScene::sphere2Sphere,
+};
+
+void PhysicsScene::checkForCollisions()
+{
+	// Check for collisions between all actors, assume they are spheres
+	int actorCount = m_actors.size();
+	for (int outer = 0; outer < actorCount - 1; outer++)
+	{
+		for (int inner = outer + 1; inner < actorCount; inner++)
+		{
+			PhysicsObject* object1 = m_actors[outer];
+			PhysicsObject* object2 = m_actors[inner];
+			int shapeId1 = object1->getShapeID();
+			int shapeId2 = object2->getShapeID();
+
+			int functionIdx = (shapeId1 * SHAPE_COUNT) + shapeId2;
+			fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
+			if (collisionFunctionPtr)
+			{
+				collisionFunctionPtr(object1, object2);
+			}
+
+			// assume they are both spheres and check for collision between the two
+			sphere2Sphere(object1, object2);
+		}
+	}
+}
+
+bool PhysicsScene::plane2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
+{
+	return false;
 }
 
 bool PhysicsScene::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)

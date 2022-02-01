@@ -27,6 +27,12 @@ bool PhysicsApp::startup()
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->addActor(new Sphere({ -50, 0 }, { 10, 0 }, 1, 10, { 0.5f, 1, 1, 1 }));
 	m_physicsScene->addActor(new Sphere({ 50, 0 }, { -10, 0 }, 1, 10, { 1, 0.5f, 1, 1 }));
+	
+	// build the walls of the screen
+	m_physicsScene->addActor(new Plane({ 0, 1 }, -51, {0.5f, 0.5f, 1, 1}));
+	m_physicsScene->addActor(new Plane({ 0, -1 }, -51, {0.5f, 0.5f, 1, 1}));
+	m_physicsScene->addActor(new Plane({ 1, 0 }, -95, {0.5f, 0.5f, 1, 1}));
+	m_physicsScene->addActor(new Plane({ -1, 0 }, -95, {0.5f, 0.5f, 1, 1}));
 
 	return true;
 }
