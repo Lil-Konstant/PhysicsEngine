@@ -1,15 +1,13 @@
 #pragma once
 
 // Include the OpenGL maths for vec2's and the std lib vectors
-#include "glm/vec2.hpp"
+#include "glm/glm.hpp"
 #include <vector>
 #include "PhysicsObject.h"
+#include "Sphere.h"
 
 using namespace std;
 using namespace glm;
-
-//// Forward declaration of PhysicsObject
-//class PhysicsObject;
 
 class PhysicsScene
 {
@@ -22,6 +20,8 @@ public:
 
 	void update(float dt);
 	void draw();
+
+	static bool sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);
 
 	// Accessor functions for m_gravity
 	void setGravity(const vec2 gravity) { m_gravity = gravity; };

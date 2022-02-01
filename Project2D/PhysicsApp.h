@@ -5,6 +5,7 @@
 #include "Gizmos.h"
 #include "Renderer2D.h"
 #include "PhysicsScene.h"
+#include "Sphere.h"
 
 class PhysicsApp : public aie::Application {
 public:
