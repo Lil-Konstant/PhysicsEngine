@@ -5,6 +5,7 @@
 #include <vector>
 #include "PhysicsObject.h"
 #include "Sphere.h"
+#include "Plane.h"
 
 using namespace std;
 using namespace glm;
@@ -24,8 +25,8 @@ public:
 	void checkForCollisions();
 
 	static bool plane2Plane(PhysicsObject* obj1, PhysicsObject* obj2);
-	static bool plane2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool plane2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);
 
 	// Accessor functions for m_gravity

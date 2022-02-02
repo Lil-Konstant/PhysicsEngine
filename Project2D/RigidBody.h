@@ -13,6 +13,7 @@ public:
 	virtual void fixedUpdate(vec2 gravity, float timeStep);
 	void applyForce(vec2 force);
 	void applyForceToActor(RigidBody* actor2, vec2 force);
+	void resolveCollision(RigidBody* actor2);
 
 	vec2 getPosition() { return m_position; }
 	float getOrientation() { return m_orientation; }

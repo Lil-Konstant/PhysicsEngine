@@ -2,8 +2,8 @@
 
 PhysicsScene::PhysicsScene()
 {
-	setTimeStep(0.01f);
-	setGravity(vec2(0, 0.0f));
+	setTimeStep(0.02f);
+	setGravity(vec2(0, 0));
 }
 
 PhysicsScene::~PhysicsScene()
@@ -37,11 +37,10 @@ void PhysicsScene::update(float dt)
 		{
 			pActor->fixedUpdate(m_gravity, dt);
 		}
-
+		
 		accumulatedTime -= m_timeStep;
+		checkForCollisions();
 	}
-
-	checkForCollisions();
 }
 
 void PhysicsScene::draw()
@@ -78,16 +77,42 @@ void PhysicsScene::checkForCollisions()
 			{
 				collisionFunctionPtr(object1, object2);
 			}
-
-			// assume they are both spheres and check for collision between the two
-			sphere2Sphere(object1, object2);
 		}
 	}
 }
 
+// Planes can't collide so simply return false
 bool PhysicsScene::plane2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 {
 	return false;
+}
+
+bool PhysicsScene::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
+{
+	Sphere* sphere = dynamic_cast<Sphere*>(obj1);
+	Plane* plane = dynamic_cast<Plane*>(obj2);
+
+	if (sphere && plane)
+	{
+		float sphereToOriginProjection = dot(sphere->getPosition(), plane->getNormal());
+		float result = sphereToOriginProjection - plane->getOriginDistance() - sphere->getRadius();
+
+		// Used to check if the sphere is already moving out of the plane
+		float speedOutOfPlane = dot(sphere->getVelocity(), plane->getNormal());
+
+		// If result is negative (meaning collision) and sphere is moving into plane, move it out
+		if (result <= 0 && speedOutOfPlane < 0)
+		{
+			sphere->applyForce(-(sphere->getVelocity() * sphere->getMass()));
+			return true;
+		}
+	}
+}
+
+// We want to use the same function for plane/sphere or sphere/plane, so just call the first with the order swapped
+bool PhysicsScene::plane2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
+{
+	return sphere2Plane(obj2, obj1);
 }
 
 bool PhysicsScene::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
@@ -102,10 +127,7 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 		// If the spheres collide, just stop their movement for now
 		if (distance <= (sphere1->getRadius() + sphere2->getRadius()))
 		{
-			sphere1->setVelocity({ 0, 0 });
-			sphere2->setVelocity({ 0, 0 });
-
-			//sphere1->applyForceToActor(sphere2, (sphere1->getMass() * sphere1->getVelocity()) + (sphere2->getMass() * sphere2->getVelocity()));
+			sphere1->resolveCollision(sphere2);
 		}
 	}
 
