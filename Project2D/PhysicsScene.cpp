@@ -103,7 +103,7 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 		// If result is negative (meaning collision) and sphere is moving into plane, move it out
 		if (result <= 0 && speedOutOfPlane < 0)
 		{
-			sphere->applyForce(-(sphere->getVelocity() * sphere->getMass()));
+			plane->resolveCollision(sphere);
 			return true;
 		}
 	}

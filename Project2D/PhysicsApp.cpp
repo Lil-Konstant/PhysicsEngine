@@ -25,9 +25,11 @@ bool PhysicsApp::startup()
 	m_timer = 0;
 
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->addActor(new Sphere({ -20, 20 }, { 150, -50 }, 0.5f, 5, { 0.5f, 1, 1, 1 }));
-	m_physicsScene->addActor(new Sphere({ -20, -20 }, { 150, 50 }, 5, 10, { 1, 0.5f, 1, 1 }));
-	
+	m_physicsScene->addActor(new Sphere({ 50, 20 }, { 150, -50 }, 0.5f, 5, { 0.5f, 1, 1, 1 }));
+	m_physicsScene->addActor(new Sphere({ -50, -20 }, { 150, 50 }, 5, 10, { 1, 0.5f, 1, 1 }));
+	m_physicsScene->addActor(new Sphere({ 0, -40 }, { -200, -200 }, 2, 8, { 1, 1, 0.5f, 1 }));
+	m_physicsScene->addActor(new Sphere({ 0, 0 }, { 15, 15 }, 25, 25, { 0.5f, 0.5f, 0.5f, 1 }));
+	 	
 	// build the walls of the screen
 	m_physicsScene->addActor(new Plane({ 0, 1 }, -51, {0.5f, 0.5f, 1, 1}));
 	m_physicsScene->addActor(new Plane({ 0, -1 }, -51, {0.5f, 0.5f, 1, 1}));

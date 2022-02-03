@@ -1,5 +1,7 @@
 #pragma once
 #include "PhysicsObject.h"
+#include "RigidBody.h"
+#include <iostream>
 class Plane :
     public PhysicsObject
 {
@@ -9,6 +11,8 @@ public:
 
     virtual void fixedUpdate(vec2 gravity, float timeStep) {}
     virtual void draw();
+
+    void resolveCollision(RigidBody* actor2);
 
     vec2 getNormal() { return m_normal; }
     float getOriginDistance() { return m_originDistance; }

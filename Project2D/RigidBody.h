@@ -15,6 +15,7 @@ public:
 	void applyForceToActor(RigidBody* actor2, vec2 force);
 	void resolveCollision(RigidBody* actor2);
 
+	float getKineticEnergy() { return 0.5f * m_mass * glm::length(m_velocity) * glm::length(m_velocity); }
 	vec2 getPosition() { return m_position; }
 	float getOrientation() { return m_orientation; }
 	vec2 getVelocity() { return m_velocity; }

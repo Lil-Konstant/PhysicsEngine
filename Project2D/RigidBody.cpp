@@ -45,5 +45,12 @@ void RigidBody::resolveCollision(RigidBody* actor2)
 	// The impulse force on each actor is then jn/-jn
 	vec2 impulseForce = impulseMagnitude * collisionNormal;
 
+	float kePre = getKineticEnergy() + actor2->getKineticEnergy();
+
 	applyForceToActor(actor2, impulseForce);
+
+	float kePost = getKineticEnergy() + actor2->getKineticEnergy();
+	float deltaKE = kePost - kePre;
+
+	if (deltaKE > kePost * 0.01f) { std::cout << "KE discrepency greater than 1%"; }
 }
