@@ -8,7 +8,7 @@ class Sphere :
     public RigidBody
 {
 public:
-    Sphere(vec2 position, vec2 velocity, float mass, float radius, vec4 colour);
+    Sphere(vec2 position, float orientation, vec2 velocity, float angularVelocity, float mass, float radius, float elasticity, vec4 colour);
     ~Sphere();
 
     virtual void draw();

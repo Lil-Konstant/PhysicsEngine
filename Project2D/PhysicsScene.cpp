@@ -3,7 +3,7 @@
 PhysicsScene::PhysicsScene()
 {
 	setTimeStep(0.02f);
-	setGravity(vec2(0, 0));
+	setGravity(vec2(0, 0.0f));
 }
 
 PhysicsScene::~PhysicsScene()
@@ -103,7 +103,8 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 		// If result is negative (meaning collision) and sphere is moving into plane, move it out
 		if (result <= 0 && speedOutOfPlane < 0)
 		{
-			plane->resolveCollision(sphere);
+			vec2 contact = sphere->getPosition() + (-(plane->getNormal()) * sphere->getRadius());
+			plane->resolveCollision(sphere, contact);
 			return true;
 		}
 	}
@@ -127,7 +128,9 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 		// If the spheres collide, just stop their movement for now
 		if (distance <= (sphere1->getRadius() + sphere2->getRadius()))
 		{
-			sphere1->resolveCollision(sphere2);
+			vec2 collisionNormal = normalize(sphere2->getPosition() - sphere1->getPosition());
+			vec2 contactPoint = sphere1->getPosition() + (collisionNormal * sphere1->getRadius());
+			sphere1->resolveCollision(sphere2, contactPoint);
 		}
 	}
 

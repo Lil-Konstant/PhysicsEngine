@@ -16,7 +16,7 @@ enum class ShapeType
 class PhysicsObject
 {
 protected:
-	PhysicsObject(ShapeType shapeID) : m_shapeID(shapeID) {}
+	PhysicsObject(ShapeType shapeID, bool isKinematic = false, float elasticity = 1.0f) : m_shapeID(shapeID), m_isKinematic(isKinematic), m_elasticity(elasticity) {}
 
 public:
 	virtual void fixedUpdate(vec2 gravity, float timeStep) = 0;
@@ -24,8 +24,11 @@ public:
 	virtual void resetPosition() {}
 
 	int getShapeID() { return static_cast<int>(m_shapeID); }
+	float getElasticity() { return m_elasticity; }
 
 protected:
 	ShapeType m_shapeID;
+	bool m_isKinematic;
+	float m_elasticity;
 };
 

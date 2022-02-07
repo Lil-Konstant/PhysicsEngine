@@ -6,13 +6,13 @@ class Plane :
     public PhysicsObject
 {
 public:
-    Plane(vec2 normal, float distance, vec4 colour) : PhysicsObject(ShapeType::PLANE), m_normal(normal), m_originDistance(distance), m_colour(colour) {}
-    ~Plane();
+    Plane(vec2 normal, float distance, vec4 colour) : PhysicsObject(ShapeType::PLANE, true, 0.9f), m_normal(normal), m_originDistance(distance), m_colour(colour) {}
+    ~Plane() {}
 
     virtual void fixedUpdate(vec2 gravity, float timeStep) {}
     virtual void draw();
 
-    void resolveCollision(RigidBody* actor2);
+    void resolveCollision(RigidBody* actor2, vec2 contact);
 
     vec2 getNormal() { return m_normal; }
     float getOriginDistance() { return m_originDistance; }
