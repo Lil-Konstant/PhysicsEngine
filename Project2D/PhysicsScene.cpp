@@ -72,10 +72,13 @@ void PhysicsScene::checkForCollisions()
 			int shapeId2 = object2->getShapeID();
 
 			int functionIdx = (shapeId1 * SHAPE_COUNT) + shapeId2;
+			//float overlap = 0.0f;
 			fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
 			if (collisionFunctionPtr)
 			{
 				collisionFunctionPtr(object1, object2);
+				// correct position by overlap amount
+				// object1->setPosition(object1->getPosition
 			}
 		}
 	}
@@ -125,12 +128,11 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 	{
 		float distance = glm::distance(sphere1->getPosition(), sphere2->getPosition());
 
-		// If the spheres collide, just stop their movement for now
 		if (distance <= (sphere1->getRadius() + sphere2->getRadius()))
 		{
 			vec2 collisionNormal = normalize(sphere2->getPosition() - sphere1->getPosition());
 			vec2 contactPoint = sphere1->getPosition() + (collisionNormal * sphere1->getRadius());
-			sphere1->resolveCollision(sphere2, contactPoint);
+			sphere1->resolveCollision(sphere2, contactPoint, collisionNormal);
 		}
 	}
 
