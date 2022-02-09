@@ -25,11 +25,17 @@ bool PhysicsApp::startup()
 	m_timer = 0;
 
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->addActor(new Sphere({ 50, 20 }, 0, { 150, -50 }, 0, 0.5f, 5, 0.8f, { 0.5f, 1, 1, 1 }));
-	m_physicsScene->addActor(new Sphere({ -50, -20 }, 0, { 150, 50 }, 0, 5, 10, 0.8f, { 1, 0.5f, 1, 1 }));
-	m_physicsScene->addActor(new Sphere({ 0, -40 }, 0, { -200, -200 }, 0, 2, 8, 0.8f, { 1, 1, 0.5f, 1 }));
-	m_physicsScene->addActor(new Sphere({ 0, 0 }, 0, { 15, 15 }, 0, 25, 25, 0.8f, { 0.5f, 0.5f, 0.5f, 1 }));
-	 	
+
+	// Sphere creation
+	//m_physicsScene->addActor(new Sphere({ 50, 20 }, 0, { 150, -50 }, 0, 0.5f, 5, 0.8f, { 0.5f, 1, 1, 1 }));
+	//m_physicsScene->addActor(new Sphere({ -50, -20 }, 0, { 150, 50 }, 0, 5, 10, 0.8f, { 1, 0.5f, 1, 1 }));
+	//m_physicsScene->addActor(new Sphere({ 0, -40 }, 0, { -200, -200 }, 0, 2, 8, 0.8f, { 1, 1, 0.5f, 1 }));
+	//m_physicsScene->addActor(new Sphere({ 0, 0 }, 0, { 15, 15 }, 0, 25, 25, 0.8f, { 0.5f, 0.5f, 0.5f, 1 }));
+	 
+	constexpr float pi = glm::pi<float>();
+	m_physicsScene->addActor(new OBB({ -50, 0 }, 20, 40, pi/3, { 30, -25 }, 1, 1, { 0.5f, 0.5f, 1, 1 }));
+	m_physicsScene->addActor(new OBB({ 50, 0 }, 10, 30, pi/2, { -40, -40 }, -2, 1, { 0.5f, 0.5f, 1, 1 }));
+
 	// build the walls of the screen
 	m_physicsScene->addActor(new Plane({ 0, 1 }, -51, {0.5f, 0.5f, 1, 0.5}));
 	m_physicsScene->addActor(new Plane({ 0, -1 }, -51, {0.5f, 0.5f, 1, 0.5}));
@@ -121,7 +127,6 @@ void PhysicsApp::draw() {
 	m_2dRenderer->drawText(m_font, "Press ESC to quit!", 0, 720 - 64);
 
 	static float aspectRatio = 16 / 9.f;
-	//aie::Gizmos::draw2D((float)getWindowWidth(), (float)getWindowHeight());
 	aie::Gizmos::draw2D(glm::ortho<float>(-100, 100, -100 / aspectRatio, 100 / aspectRatio, -1.0f, 1.0f));
 
 

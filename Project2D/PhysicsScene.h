@@ -6,6 +6,7 @@
 #include "PhysicsObject.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "OBB.h"
 
 using namespace std;
 using namespace glm;
@@ -28,6 +29,11 @@ public:
 	static bool sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool plane2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool OBB2Plane(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool plane2OBB(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool OBB2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool sphere2OBB(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool OBB2OBB(PhysicsObject* obj1, PhysicsObject* obj2);
 
 	// Accessor functions for m_gravity
 	void setGravity(const vec2 gravity) { m_gravity = gravity; };

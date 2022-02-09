@@ -17,23 +17,22 @@ void Plane::draw()
 
 void Plane::resolveCollision(RigidBody* actor2, vec2 contact)
 {
-	// We assume the collision normal to be the difference in positions (correct for sphere's with no friction)
-	vec2 collisionNormal = m_normal;
-	vec2 relativeVelocity = actor2->getVelocity();
+	// Find r at collision point p
+	vec2 contactDisplacement = contact - actor2->getPosition();
 
-	// From Newton's law of restitution equation
+	// Debug, draw the contact point as a red circle and r as a red line
+	aie::Gizmos::add2DCircle(contact, 2, 100, { 1, 0, 0, 1 });
+	aie::Gizmos::add2DLine(actor2->getPosition(), contact, { 1, 0, 0, 1 });
+
+	// Find the total relative velocity of actor2 (linear vel + r x w)
+	vec2 vRel = actor2->getVelocity() + vec2(-actor2->getAngularVelocity() *contactDisplacement.y, actor2->getAngularVelocity() * contactDisplacement.x);
+
+	// Using the equation for J from newton's law of restitution, find the magnitude of force due to the actors relative velocity and contact displacement
 	float elasticity = (m_elasticity + actor2->getElasticity()) / 2;
-	float impulseMagnitude = (dot(-(1 + elasticity) * relativeVelocity, collisionNormal)) / (1 / actor2->getMass());
-
-	// The impulse force on each actor is then jn/-jn
-	vec2 impulseForce = impulseMagnitude * collisionNormal;
-
-	float kePre = actor2->getKineticEnergy();
-
-	actor2->applyForce(impulseForce, contact - actor2->getPosition());
-
-	float kePost = actor2->getKineticEnergy();
-	float deltaKE = kePost - kePre;
-
-	if (deltaKE > kePost * 0.01f) { std::cout << "KE discrepency greater than 1%"; }
+	float contactDisplacementCrossNormalSquared = dot((contactDisplacement.x * m_normal.y - contactDisplacement.y * m_normal.x), (contactDisplacement.x * m_normal.y - contactDisplacement.y * m_normal.x));
+	float impuluseMagnitude = (-(1 + elasticity) * dot(vRel, m_normal)) / ((1 / actor2->getMass()) + (contactDisplacementCrossNormalSquared / actor2->getMoment()));
+	
+	// This j is applied down the collision normal
+	vec2 impulseForce = impuluseMagnitude * m_normal;
+	actor2->applyForce(impulseForce, contactDisplacement);
 }

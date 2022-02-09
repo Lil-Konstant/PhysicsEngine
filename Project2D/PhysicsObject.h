@@ -8,10 +8,10 @@ enum class ShapeType
 {
 	PLANE = 0,
 	SPHERE,
-	LAST = SPHERE
+	OBB
 };
 
-#define SHAPE_COUNT static_cast<int>(ShapeType::LAST) + 1
+#define SHAPE_COUNT 3
 
 class PhysicsObject
 {
