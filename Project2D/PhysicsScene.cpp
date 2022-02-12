@@ -108,7 +108,7 @@ bool PhysicsScene::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 		if (result <= 0 && speedOutOfPlane < 0)
 		{
 			vec2 contact = sphere->getPosition() + (-(plane->getNormal()) * sphere->getRadius());
-			plane->resolveCollision(sphere, contact);
+			sphere->resolveCollision(plane, contact, plane->getNormal());
 			return true;
 		}
 	}
@@ -178,7 +178,12 @@ bool PhysicsScene::OBB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 
 		if (numContacts > 0)
 		{
-			plane->resolveCollision(obb, contact / (float)numContacts);
+			obb->resolveCollision(plane, contact / (float)numContacts, plane->getNormal());
+
+			// Draw a line to the contact point
+			aie::Gizmos::add2DCircle(contact / (float)numContacts, 2, 100, {1, 0, 0, 1});
+			aie::Gizmos::add2DLine(obb->getPosition(), contact, { 1, 0, 0, 1 });
+
 			return true;
 		}
 	}
@@ -212,9 +217,15 @@ bool PhysicsScene::OBB2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 		if (closestDistance < sphere->getRadius())
 		{
 			// Convert the local contact point on the obb into world coordinates
-			vec2 contact = obb->getPosition() + (possibleContactLocal.x * obb->getLocalX()) + (possibleContactLocal.y * obb->getLocalX());
+			vec2 contact = obb->getPosition() + (possibleContactLocal.x * obb->getLocalX()) + (possibleContactLocal.y * obb->getLocalY());
 			vec2 collisionNormal = glm::normalize(sphere->getPosition() - contact);
 			obb->resolveCollision(sphere, contact, collisionNormal);
+
+			// Draw a line to the contact point
+			aie::Gizmos::add2DCircle(contact, 2, 100, { 1, 0, 0, 1 });
+			aie::Gizmos::add2DLine(obb->getPosition(), contact, { 1, 0, 0, 1 });
+			aie::Gizmos::add2DLine(sphere->getPosition(), contact, { 1, 0, 0, 1 });
+
 			return true;
 		}
 	}
@@ -229,27 +240,30 @@ bool PhysicsScene::sphere2OBB(PhysicsObject* obj1, PhysicsObject* obj2)
 
 bool PhysicsScene::OBB2OBB(PhysicsObject* obj1, PhysicsObject* obj2)
 {
+	static int callCount = 0;
+
 	OBB* obb1 = dynamic_cast<OBB*>(obj1);
 	OBB* obb2 = dynamic_cast<OBB*>(obj2);
 
 	if (obb1 && obb2)
 	{
-		vec2 obbPos = obb2->getPosition() - obb1->getPosition();
+		//vec2 obbPos = obb2->getPosition() - obb1->getPosition();
 		vec2 collisionNormal(0, 0);
 		vec2 contact(0, 0);
 		float pen = 0;
 		int numContacts = 0;
 
 		obb1->checkOBBCorners(*obb2, contact, numContacts, pen, collisionNormal);
-		// If the second calls finds the smallest penetration, flip the normal so it still points from obb1 to obb2
 		if (obb2->checkOBBCorners(*obb1, contact, numContacts, pen, collisionNormal))
 		{
+			//std::cout << "Box 1: " << "( " << obb1->getPosition().x << ", " << obb1->getPosition().y << ")" << ", Box 2: " << "( " << obb2->getPosition().x << ", " << obb2->getPosition().y << ")" << std::endl;
 			collisionNormal = -collisionNormal;
 		}
+		// If the second calls finds the smallest penetration, flip the normal so it still points from obb1 to obb2
 		if (pen > 0)
 		{
 			obb1->resolveCollision(obb2, contact / (float)numContacts, collisionNormal);
-			std::cout << "OBBs banging" << std::endl;
+			//std::cout << callCount++ << std::endl;
 			return true;
 		}
 	}

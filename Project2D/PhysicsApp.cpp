@@ -27,14 +27,15 @@ bool PhysicsApp::startup()
 	m_physicsScene = new PhysicsScene();
 
 	// Sphere creation
-	//m_physicsScene->addActor(new Sphere({ 50, 20 }, 0, { 150, -50 }, 0, 0.5f, 5, 0.8f, { 0.5f, 1, 1, 1 }));
-	//m_physicsScene->addActor(new Sphere({ -50, -20 }, 0, { 150, 50 }, 0, 5, 10, 0.8f, { 1, 0.5f, 1, 1 }));
-	//m_physicsScene->addActor(new Sphere({ 0, -40 }, 0, { -200, -200 }, 0, 2, 8, 0.8f, { 1, 1, 0.5f, 1 }));
+	m_physicsScene->addActor(new Sphere({ 50, -4 }, 0, { -10, 0 }, 2, 0.5f, 5, 0.8f, { 0.5f, 1, 1, 1 }));
+	m_physicsScene->addActor(new Sphere({ -50, -20 }, 0, { 150, 50 }, 1, 5, 10, 0.8f, { 1, 0.5f, 1, 1 }));
+	m_physicsScene->addActor(new Sphere({ 0, 0 }, 0, { -20, -50 }, 1, 2, 8, 0.8f, { 1, 1, 0.5f, 1 }));
 	//m_physicsScene->addActor(new Sphere({ 0, 0 }, 0, { 15, 15 }, 0, 25, 25, 0.8f, { 0.5f, 0.5f, 0.5f, 1 }));
 	 
 	constexpr float pi = glm::pi<float>();
-	m_physicsScene->addActor(new OBB({ -50, 0 }, 20, 40, pi/3, { 30, -25 }, 1, 1, { 0.5f, 0.5f, 1, 1 }));
-	m_physicsScene->addActor(new OBB({ 50, 0 }, 10, 30, pi/2, { -40, -40 }, -2, 1, { 0.5f, 0.5f, 1, 1 }));
+	m_physicsScene->addActor(new OBB({ -20, 0 }, 5, 40, -pi/3 + pi, { 60, 8 }, 0.5f, 1, { 0.5f, 0.5f, 1, 1 }));
+	m_physicsScene->addActor(new OBB({ 20, 0 }, 10, 30, pi/4 + pi, { -12, 10}, 2.0f, 1, { 0.5f, 0.15f, 0.5f, 1 }));
+	m_physicsScene->addActor(new OBB({ 50, 50 }, 2, 70, pi/4 + pi, { 20, -40}, 4.0f, 1, { 0.15f, 0.15f, 0.8f, 1 }));
 
 	// build the walls of the screen
 	m_physicsScene->addActor(new Plane({ 0, 1 }, -51, {0.5f, 0.5f, 1, 0.5}));

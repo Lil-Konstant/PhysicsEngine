@@ -31,36 +31,67 @@ void RigidBody::applyForce(vec2 force, vec2 contactDisplacement)
 	m_angularVelocity += (contactDisplacement.x * force.y - contactDisplacement.y * force.x) / getMoment();
 }
 
-void RigidBody::resolveCollision(RigidBody* actor2, vec2 contact, vec2 collisionNormal)
+void RigidBody::resolveCollision(PhysicsObject* other, vec2 contact, vec2 collisionNormal)
 {
+    RigidBody* actor2 = dynamic_cast<RigidBody*>(other);
+
     // If a collision normal has been passed then use it, otherwise calculate based on the actors centres
     vec2 normal = normalize(collisionNormal == vec2(0, 0) ? actor2->getPosition() - m_position : collisionNormal);
 
     // Find r at collision point p for both actors
     vec2 contactDisplacementA = contact - m_position;
-    vec2 contactDisplacementB = contact - actor2->getPosition();
+    vec2 contactDisplacementB = vec2(0, 0);
+    // If this rigidbody is not colliding with a plane or kinematic object, calculate the contact displacement
+    if (actor2 && !actor2->m_isKinematic)
+    {
+        contactDisplacementB = contact - actor2->getPosition();
+    }
 
     // Debug, draw the contact point as a red circle and r as a red line
-    aie::Gizmos::add2DCircle(contact, 2, 100, { 1, 0, 0, 1 });
-    aie::Gizmos::add2DLine(m_position, contact, { 1, 0, 0, 1 });
-    aie::Gizmos::add2DLine(actor2->getPosition(), contact, { 1, 0, 0, 1 });
+    //aie::Gizmos::add2DCircle(contact, 2, 100, { 1, 0, 0, 1 });
+    //aie::Gizmos::add2DLine(m_position, contact, { 1, 0, 0, 1 });
+    //aie::Gizmos::add2DLine(actor2->getPosition(), contact, { 1, 0, 0, 1 });
 
     // Find the total relative velocity between both actors (linear vel + r x w)
     vec2 velocityAtA = m_velocity + vec2(-m_angularVelocity * contactDisplacementA.y, m_angularVelocity * contactDisplacementA.x);
-    vec2 velocityAtB = actor2->getVelocity() + vec2(actor2->getAngularVelocity() * -contactDisplacementB.y, actor2->getAngularVelocity() * contactDisplacementB.x);
+    vec2 velocityAtB = vec2(0, 0);
+    // If this rigidbody is not colliding with a plane or kinematic object, calculate the velocity of actor2
+    if (actor2 && !actor2->m_isKinematic)
+    {
+        velocityAtB = actor2->getVelocity() + vec2(actor2->getAngularVelocity() * -contactDisplacementB.y, actor2->getAngularVelocity() * contactDisplacementB.x);
+    }
+
     vec2 vRel = velocityAtA - velocityAtB;
 
-    // Using the equation for J from newton's law of restitution, find the magnitude of force due to the actors relative velocity and contact displacement
-    float elasticity = (m_elasticity + actor2->getElasticity()) / 2;
+    if (dot(vRel, collisionNormal) > 0 || !actor2)
+    {
+        // Using the equation for J from newton's law of restitution, find the magnitude of force due to the actors relative velocity and contact displacement
+        float elasticity = (m_elasticity + other->getElasticity()) / 2;
 
-    // Store the cross products (r x n)^2 for both contact displacements as they are long and obscure clarity
-    float contactDisplacementACrossNormalSquared = dot((contactDisplacementA.x * normal.y - contactDisplacementA.y * normal.x), (contactDisplacementA.x * normal.y - contactDisplacementA.y * normal.x));
-    float contactDisplacementBCrossNormalSquared = dot((contactDisplacementB.x * normal.y - contactDisplacementB.y * normal.x), (contactDisplacementB.x * normal.y - contactDisplacementB.y * normal.x));
-    // Using the equation for J from newton's law of restitution, find the magnitude of force due to the actors relative velocity and contact displacement
-    float impuluseMagnitude = (-(1 + elasticity) * dot(vRel, normal)) / ((1 / m_mass) + (1 / actor2->getMass()) + (contactDisplacementACrossNormalSquared / m_moment) + (contactDisplacementBCrossNormalSquared / actor2->getMoment()));
+        // Store the cross products (r x n)^2 for both contact displacements as they are long and obscure clarity
+        float contactDisplacementACrossNormalSquared = dot((contactDisplacementA.x * normal.y - contactDisplacementA.y * normal.x), (contactDisplacementA.x * normal.y - contactDisplacementA.y * normal.x)) / m_moment;
+        float contactDisplacementBCrossNormalSquared = 0;
+        if (actor2 && !actor2->m_isKinematic)
+        {
+            contactDisplacementBCrossNormalSquared = dot((contactDisplacementB.x * normal.y - contactDisplacementB.y * normal.x), (contactDisplacementB.x * normal.y - contactDisplacementB.y * normal.x)) / actor2->getMoment();
+        }
 
-    // This j is applied down the collision normal
-    vec2 impulseForce = impuluseMagnitude * normal;
-    applyForce(impulseForce, contactDisplacementA);
-    actor2->applyForce(-impulseForce, contactDisplacementB);
+        float inverseMassA = 1 / m_mass;
+        float inverseMassB = 0;
+        if (actor2 && !actor2->m_isKinematic)
+        {
+            inverseMassB = 1 / actor2->getMass();
+        }
+
+        // Using the equation for J from newton's law of restitution, find the magnitude of force due to the actors relative velocity and contact displacement
+        float impuluseMagnitude = (-(1 + elasticity) * dot(vRel, normal)) / (inverseMassA + inverseMassB + contactDisplacementACrossNormalSquared + contactDisplacementBCrossNormalSquared);
+
+        // This j is applied down the collision normal
+        vec2 impulseForce = impuluseMagnitude * normal;
+        applyForce(impulseForce, contactDisplacementA);
+        if (actor2 && !actor2->m_isKinematic)
+        {
+            actor2->applyForce(-impulseForce, contactDisplacementB);
+        }
+    }
 }

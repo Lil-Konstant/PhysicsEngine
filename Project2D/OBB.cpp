@@ -33,6 +33,9 @@ void OBB::draw()
 
 	aie::Gizmos::add2DTri(corners[0], corners[1], corners[3], m_colour);
 	aie::Gizmos::add2DTri(corners[0], corners[3], corners[2], m_colour);
+
+	aie::Gizmos::add2DLine(m_position, m_position + (m_localX * m_extents.x), { 1,0,0,1 });
+	aie::Gizmos::add2DLine(m_position, m_position + (m_localY * m_extents.y), { 1,0,0,1 });
 }
 
 bool OBB::checkOBBCorners(const OBB& otherOBB, vec2& contact, int& numContacts, float& pen, vec2& edgeNormal)
@@ -53,8 +56,8 @@ bool OBB::checkOBBCorners(const OBB& otherOBB, vec2& contact, int& numContacts, 
 		// Update the min/max extents of otherOBB along each axes of this OBBs space
 		if (first || cornerLocalPos.x < minX) minX = cornerLocalPos.x;
 		if (first || cornerLocalPos.x > maxX) maxX = cornerLocalPos.x;
-		if (first || cornerLocalPos.y < minY) minY = cornerLocalPos.x;
-		if (first || cornerLocalPos.y > maxY) maxY = cornerLocalPos.x;
+		if (first || cornerLocalPos.y < minY) minY = cornerLocalPos.y;
+		if (first || cornerLocalPos.y > maxY) maxY = cornerLocalPos.y;
 
 		// If the other OBBs corner is inside this OBB, add it to the list of contact points
 		if (cornerLocalPos.x >= -m_extents.x && cornerLocalPos.x <= m_extents.x && cornerLocalPos.y >= -m_extents.y && cornerLocalPos.y <= m_extents.y)
@@ -82,7 +85,7 @@ bool OBB::checkOBBCorners(const OBB& otherOBB, vec2& contact, int& numContacts, 
 	contact += m_position + (localContact.x * m_localX + localContact.y * m_localY) / (float)numLocalContacts;
 	numContacts++;
 
-	// Find the minimum penetration vecotr as a penetration amount and normal
+	// Find the minimum penetration vector as a penetration amount and normal
 	// Checking right face
 	float pen0 = m_extents.x - minX;
 	if (pen0 > 0 && (pen0 < pen || pen == 0))
