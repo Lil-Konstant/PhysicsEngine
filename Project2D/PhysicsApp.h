@@ -7,6 +7,7 @@
 #include "PhysicsScene.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "AABB.h"
 #include "OBB.h"
 
 class PhysicsApp : public aie::Application {

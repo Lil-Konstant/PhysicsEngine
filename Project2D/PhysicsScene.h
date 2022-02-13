@@ -6,6 +6,7 @@
 #include "PhysicsObject.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "AABB.h"
 #include "OBB.h"
 
 using namespace std;
@@ -24,11 +25,18 @@ public:
 	void draw();
 
 	void checkForCollisions();
-
+	// Collision detection functions between all collision primitives
 	static bool plane2Plane(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool plane2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool AABB2Plane(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool plane2AABB(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool AABB2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool sphere2AABB(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool AABB2OBB(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool OBB2AABB(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool AABB2AABB(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool OBB2Plane(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool plane2OBB(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool OBB2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);

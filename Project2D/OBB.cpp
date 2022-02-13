@@ -33,9 +33,6 @@ void OBB::draw()
 
 	aie::Gizmos::add2DTri(corners[0], corners[1], corners[3], m_colour);
 	aie::Gizmos::add2DTri(corners[0], corners[3], corners[2], m_colour);
-
-	aie::Gizmos::add2DLine(m_position, m_position + (m_localX * m_extents.x), { 1,0,0,1 });
-	aie::Gizmos::add2DLine(m_position, m_position + (m_localY * m_extents.y), { 1,0,0,1 });
 }
 
 bool OBB::checkOBBCorners(const OBB& otherOBB, vec2& contact, int& numContacts, float& pen, vec2& edgeNormal)

@@ -172,6 +172,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AABB.cpp" />
     <ClCompile Include="OBB.cpp" />
     <ClCompile Include="PhysicsApp.cpp" />
     <ClCompile Include="main.cpp" />
@@ -182,6 +183,7 @@
     <ClCompile Include="Sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABB.h" />
     <ClInclude Include="OBB.h" />
     <ClInclude Include="PhysicsApp.h" />
     <ClInclude Include="PhysicsObject.h" />

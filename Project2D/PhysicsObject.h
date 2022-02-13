@@ -8,10 +8,11 @@ enum class ShapeType
 {
 	PLANE = 0,
 	SPHERE,
+	AABB,
 	OBB
 };
 
-#define SHAPE_COUNT 3
+#define SHAPE_COUNT 4
 
 class PhysicsObject
 {

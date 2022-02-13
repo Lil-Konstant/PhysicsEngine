@@ -47,11 +47,6 @@ void RigidBody::resolveCollision(PhysicsObject* other, vec2 contact, vec2 collis
         contactDisplacementB = contact - actor2->getPosition();
     }
 
-    // Debug, draw the contact point as a red circle and r as a red line
-    //aie::Gizmos::add2DCircle(contact, 2, 100, { 1, 0, 0, 1 });
-    //aie::Gizmos::add2DLine(m_position, contact, { 1, 0, 0, 1 });
-    //aie::Gizmos::add2DLine(actor2->getPosition(), contact, { 1, 0, 0, 1 });
-
     // Find the total relative velocity between both actors (linear vel + r x w)
     vec2 velocityAtA = m_velocity + vec2(-m_angularVelocity * contactDisplacementA.y, m_angularVelocity * contactDisplacementA.x);
     vec2 velocityAtB = vec2(0, 0);
