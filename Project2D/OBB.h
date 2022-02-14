@@ -17,6 +17,8 @@ public:
     // Used for OBB2OBB collision detection
     bool checkOBBCorners(const OBB& obb, vec2& contact, int& numContacts, float& pen, vec2& edgeNormal);
 
+    bool isInside(vec2 point) override;
+
     // Getters
     vec2 getExtents() const { return m_extents; }
     float getWidth() const { return m_extents.x * 2; }

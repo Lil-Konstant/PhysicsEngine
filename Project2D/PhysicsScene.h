@@ -1,8 +1,8 @@
 #pragma once
 
 // Include the OpenGL maths for vec2's and the std lib vectors
-#include "glm/glm.hpp"
 #include <vector>
+#include "glm/glm.hpp"
 #include "PhysicsObject.h"
 #include "Sphere.h"
 #include "Plane.h"
@@ -42,6 +42,8 @@ public:
 	static bool OBB2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool sphere2OBB(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool OBB2OBB(PhysicsObject* obj1, PhysicsObject* obj2);
+
+	PhysicsObject* objectUnderPoint(vec2 point);
 
 	// Accessor functions for m_gravity
 	void setGravity(const vec2 gravity) { m_gravity = gravity; };

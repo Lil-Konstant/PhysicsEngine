@@ -5,6 +5,7 @@ Sphere::Sphere(vec2 position, float orientation, vec2 velocity, float angularVel
 	m_radius = radius;
 	m_colour = colour;
 	m_elasticity = elasticity;
+	
 	// Calculate the moment using the moment equation for a circle
 	m_moment = 0.5f * mass * m_radius * m_radius;
 }
@@ -17,6 +18,11 @@ void Sphere::draw()
 	aie::Gizmos::add2DLine(m_position, m_position + end, vec4(0, 0, 0, 1));
 }
 
+/// <summary>
+/// Returns true if the vec2 point is inside this sphere.
+/// </summary>
+/// <param name="point">The input point to check against.</param>
+/// <returns>True if point is inside this sphere.</returns>
 bool Sphere::isInside(vec2 point)
 {
 	return distance(point, m_position) <= m_radius;

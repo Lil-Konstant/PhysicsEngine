@@ -31,14 +31,14 @@ bool PhysicsApp::startup()
 	m_physicsScene = new PhysicsScene();
 
 	// Sphere creation
-	m_physicsScene->addActor(new Sphere({ 50, -4 }, 0, { -10, 0 }, 2, 0.5f, 5, 1, { 0.5f, 1, 1, 1 }));
-	m_physicsScene->addActor(new Sphere({ -50, -20 }, 0, { 120, 50 }, 1, 5, 10, 1, { 1, 0.5f, 1, 1 }));
-	m_physicsScene->addActor(new Sphere({ 0, 0 }, 0, { -20, -50 }, 1, 2, 8, 1, { 1, 1, 0.5f, 1 }));
+	//m_physicsScene->addActor(new Sphere({ 50, -4 }, 0, { -10, 0 }, 2, 0.5f, 5, 1, { 0.5f, 1, 1, 1 }));
+	//m_physicsScene->addActor(new Sphere({ -50, -20 }, 0, { 120, 50 }, 1, 5, 10, 1, { 1, 0.5f, 1, 1 }));
+	//m_physicsScene->addActor(new Sphere({ 0, 0 }, 0, { -20, -50 }, 1, 2, 8, 1, { 1, 1, 0.5f, 1 }));
 	//m_physicsScene->addActor(new Sphere({ 0, 0 }, 0, { 15, 15 }, 0, 25, 25, 0.8f, { 0.5f, 0.5f, 0.5f, 1 }));
 	 
 	constexpr float pi = glm::pi<float>();
-	m_physicsScene->addActor(new OBB({ -20, 0 }, 5, 40, -pi/3 + pi, { 60, 8 }, 0.5f, 1, { 0.5f, 0.5f, 1, 1 }));
-	m_physicsScene->addActor(new OBB({ 20, 0 }, 10, 30, pi/4 + pi, { -12, 10}, 2.0f, 1, { 0.5f, 0.15f, 0.5f, 1 }));
+	m_physicsScene->addActor(new OBB({ 50, 0 }, 5, 40, 0, { 0, 0 }, 5, 1, { 0.5f, 0.5f, 1, 1 }));
+	//m_physicsScene->addActor(new OBB({ 20, 0 }, 10, 30, pi/4 + pi, { -12, 10}, 2.0f, 1, { 0.5f, 0.15f, 0.5f, 1 }));
 	//m_physicsScene->addActor(new OBB({ 50, 50 }, 2, 70, pi/4 + pi, { 20, -40}, 4.0f, 1, { 0.15f, 0.15f, 0.8f, 1 }));
 
 	//m_physicsScene->addActor(new AABB({ 0, 0 }, 40, 40, { 100, 40 }, 1, { 1, 0, 0, 1 }));
@@ -98,12 +98,15 @@ void PhysicsApp::update(float deltaTime) {
 
 	if (input->isMouseButtonDown(0))
 	{
+		// Get the mouse position in world coordinates and draw it as a circle on the screen
 		int xScreen, yScreen;
 		input->getMouseXY(&xScreen, &yScreen);
 		vec2 worldPos = screenToWorld(vec2(xScreen, yScreen));
+		aie::Gizmos::add2DCircle(worldPos, 1, 32, { 1, 0, 0, 1 });
+		
+		m_physicsScene->objectUnderPoint(worldPos);
 
-		aie::Gizmos::add2DCircle(worldPos, 3, 32, { 1, 0, 0, 1 });
-
+		//RigidBody* objectUnderneath = m_mphys
 	}
 }
 

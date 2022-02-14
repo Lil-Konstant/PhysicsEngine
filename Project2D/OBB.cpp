@@ -119,6 +119,21 @@ bool OBB::checkOBBCorners(const OBB& otherOBB, vec2& contact, int& numContacts, 
 	return result;
 }
 
+/// <summary>
+/// Returns true if the vec2 point is inside this OBB.
+/// </summary>
+/// <param name="point">The input point to check against.</param>
+/// <returns>True if point is inside this OBB.</returns>
+bool OBB::isInside(vec2 point)
+{
+	vec2 pointDisplacement = point - m_position;
+	// Convert the input point from world space to the local space of this OBB
+	vec2 localPos = vec2(dot(pointDisplacement, m_localX), dot(pointDisplacement, m_localY));
+
+	// If the point locally lies within all extents, then is lies within this OBB
+	return localPos.x >= -m_extents.x && localPos.x <= m_extents.x && localPos.y >= -m_extents.y && localPos.y <= m_extents.y;
+}
+
 vector<vec2> OBB::getCorners() const
 {
 	vector<vec2> corners (4);
