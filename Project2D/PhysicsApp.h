@@ -22,12 +22,17 @@ public:
 	virtual void update(float deltaTime);
 	virtual void draw();
 
+	vec2 screenToWorld(vec2 screenPos);
+
 protected:
 
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Texture*		m_texture;
 	aie::Texture*		m_shipTexture;
 	aie::Font*			m_font;
+
+	static const float extents;
+	static const float aspectRatio;
 
 	float m_timer;
 	PhysicsScene* m_physicsScene;

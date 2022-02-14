@@ -13,6 +13,8 @@ public:
 
     virtual void draw();
 
+    bool isInside(vec2 point) override;
+
     float getRadius() { return m_radius; }
     vec4 getColour() { return m_colour; }
 

@@ -16,3 +16,8 @@ void Sphere::draw()
 	aie::Gizmos::add2DCircle(m_position, m_radius, 100, m_colour);
 	aie::Gizmos::add2DLine(m_position, m_position + end, vec4(0, 0, 0, 1));
 }
+
+bool Sphere::isInside(vec2 point)
+{
+	return distance(point, m_position) <= m_radius;
+}

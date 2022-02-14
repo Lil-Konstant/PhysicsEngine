@@ -2,7 +2,7 @@
 
 PhysicsScene::PhysicsScene()
 {
-	setTimeStep(0.01f);
+	setTimeStep(0.02f);
 	setGravity(vec2(0, 0.0f));
 }
 
