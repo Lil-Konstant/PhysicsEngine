@@ -6,25 +6,8 @@ OBB::OBB(vec2 position, float width, float height, float orientation, vec2 veloc
 	m_extents.y = height / 2;
 	m_colour = colour;
 
-	// Calculate and store the local axis vectors based on the OBBs new orientation
-	float cs = cosf(m_orientation);
-	float sn = sinf(m_orientation);
-	m_localX = normalize(vec2(cs, sn));
-	m_localY = normalize(vec2(-sn, cs));
-
 	// Calculate the moment using the moment equation for a box about it's centroid (COM)
 	m_moment = (mass * (width * width + height * height))/ 12;
-}
-
-void OBB::fixedUpdate(vec2 gravity, float timeStep)
-{
-	RigidBody::fixedUpdate(gravity, timeStep);
-
-	// Calculate and store the local axis vectors based on the OBBs new orientation
-	float cs = cosf(m_orientation);
-	float sn = sinf(m_orientation);
-	m_localX = normalize(vec2(cs, sn));
-	m_localY = normalize(vec2(-sn, cs));
 }
 
 void OBB::draw()

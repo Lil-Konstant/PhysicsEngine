@@ -6,13 +6,15 @@ using namespace glm;
 
 enum class ShapeType
 {
-	PLANE = 0,
+	JOINT = -1,
+	PLANE,
 	SPHERE,
 	AABB,
-	OBB
+	OBB,
+	SHAPE_COUNT
 };
 
-#define SHAPE_COUNT 4
+//#define SHAPE_COUNT 4
 
 class PhysicsObject
 {
@@ -27,7 +29,10 @@ public:
 	virtual bool isInside(vec2 point) { return false; }
 
 	int getShapeID() { return static_cast<int>(m_shapeID); }
+	bool getIsKinematic() { return m_isKinematic; }
 	float getElasticity() { return m_elasticity; }
+
+	void setIsKinematic(bool value) { m_isKinematic = value; }
 
 protected:
 	ShapeType m_shapeID;

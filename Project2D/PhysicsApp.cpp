@@ -2,7 +2,11 @@
 #include "Texture.h"
 #include "Font.h"
 #include "Input.h"
-
+#include "Sphere.h"
+#include "Plane.h"
+#include "AABB.h"
+#include "OBB.h"
+#include "Spring.h"
 
 const float PhysicsApp::extents = 100;
 const float PhysicsApp::aspectRatio = 16.0f / 9.0f;
@@ -32,8 +36,15 @@ bool PhysicsApp::startup()
 
 	// Sphere creation
 	//m_physicsScene->addActor(new Sphere({ 50, -4 }, 0, { -10, 0 }, 2, 0.5f, 5, 1, { 0.5f, 1, 1, 1 }));
-	//m_physicsScene->addActor(new Sphere({ -50, -20 }, 0, { 120, 50 }, 1, 5, 10, 1, { 1, 0.5f, 1, 1 }));
-	//m_physicsScene->addActor(new Sphere({ 0, 0 }, 0, { -20, -50 }, 1, 2, 8, 1, { 1, 1, 0.5f, 1 }));
+	Sphere* sphere1 = new Sphere({ 0, 0 }, 0, { 0, 0 }, 1, 1, 10, 1, { 1, 0.5f, 1, 1 });
+	Sphere* sphere2 = new Sphere({ -20, 0 }, 0, { 0, 0 }, 1, 1, 10, 1, { 1, 1, 0.5f, 1 });
+	sphere2->setIsKinematic(false);
+	Spring* spring = new Spring(sphere1, sphere2, { 1, 0, 0, 1 }, 10.0f, 25.0f, 0.5f, vec2(0, 0), vec2(sphere2->getRadius() / 2, 0));
+
+	//sphere->setIsKinematic(true);
+	m_physicsScene->addActor(sphere1);
+	m_physicsScene->addActor(sphere2);
+	m_physicsScene->addActor(spring);
 	//m_physicsScene->addActor(new Sphere({ 0, 0 }, 0, { 15, 15 }, 0, 25, 25, 0.8f, { 0.5f, 0.5f, 0.5f, 1 }));
 	 
 	constexpr float pi = glm::pi<float>();

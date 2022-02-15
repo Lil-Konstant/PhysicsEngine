@@ -76,7 +76,13 @@ void PhysicsScene::checkForCollisions()
 			int shapeId1 = object1->getShapeID();
 			int shapeId2 = object2->getShapeID();
 
-			int functionIdx = (shapeId1 * SHAPE_COUNT) + shapeId2;
+			// If either shape is a spring joint, skip collision detection
+			if (shapeId1 < 0 || shapeId2 < 0)
+			{
+				continue;
+			}
+
+			int functionIdx = (shapeId1 * (int)ShapeType::SHAPE_COUNT) + shapeId2;
 			fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
 			if (collisionFunctionPtr)
 			{
