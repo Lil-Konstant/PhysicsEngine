@@ -21,6 +21,8 @@ PhysicsApp::~PhysicsApp() {
 
 bool PhysicsApp::startup() 
 {
+	constexpr float pi = glm::pi<float>();
+
 	// increase the 2D line count to maximize the number of objects we can draw
 	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
 
@@ -38,8 +40,10 @@ bool PhysicsApp::startup()
 	//m_physicsScene->addActor(new Sphere({ 50, -4 }, 0, { -10, 0 }, 2, 0.5f, 5, 1, { 0.5f, 1, 1, 1 }));
 	Sphere* sphere1 = new Sphere({ 0, 0 }, 0, { 0, 0 }, 1, 1, 10, 1, { 1, 0.5f, 1, 1 });
 	Sphere* sphere2 = new Sphere({ -20, 0 }, 0, { 0, 0 }, 1, 1, 10, 1, { 1, 1, 0.5f, 1 });
-	sphere2->setIsKinematic(false);
+	OBB* box1 = new OBB({ 50, 0 }, 5, 40, pi/3, { 0, 0 }, 0, 1, { 0.5f, 0.5f, 1, 1 });
+	sphere2->setIsKinematic(true);
 	Spring* spring = new Spring(sphere1, sphere2, { 1, 0, 0, 1 }, 10.0f, 25.0f, 0.5f, vec2(0, 0), vec2(sphere2->getRadius() / 2, 0));
+	Spring* spring2 = new Spring(sphere2, sphere2, { 1, 0, 0, 1 }, 10.0f, 25.0f, 0.5f, vec2(0, 0), vec2(sphere2->getRadius() / 2, 0));
 
 	//sphere->setIsKinematic(true);
 	m_physicsScene->addActor(sphere1);
@@ -47,8 +51,8 @@ bool PhysicsApp::startup()
 	m_physicsScene->addActor(spring);
 	//m_physicsScene->addActor(new Sphere({ 0, 0 }, 0, { 15, 15 }, 0, 25, 25, 0.8f, { 0.5f, 0.5f, 0.5f, 1 }));
 	 
-	constexpr float pi = glm::pi<float>();
-	m_physicsScene->addActor(new OBB({ 50, 0 }, 5, 40, 0, { 0, 0 }, 5, 1, { 0.5f, 0.5f, 1, 1 }));
+
+	//m_physicsScene->addActor(new OBB({ 50, 0 }, 5, 40, 0, { 0, 0 }, 5, 1, { 0.5f, 0.5f, 1, 1 }));
 	//m_physicsScene->addActor(new OBB({ 20, 0 }, 10, 30, pi/4 + pi, { -12, 10}, 2.0f, 1, { 0.5f, 0.15f, 0.5f, 1 }));
 	//m_physicsScene->addActor(new OBB({ 50, 50 }, 2, 70, pi/4 + pi, { 20, -40}, 4.0f, 1, { 0.15f, 0.15f, 0.8f, 1 }));
 

@@ -30,9 +30,8 @@ void Spring::fixedUpdate(vec2 gravity, float timeStep)
 	float magnitude = (m_springCoefficient * (m_restLength - length)) - (m_damping * relativeVelocity);
 	vec2 force = (direction * magnitude);
 
-	if (m_body1) { m_body1->applyForce(-force * timeStep, p1 - m_body1->getPosition()); }
-	if (m_body2) { m_body2->applyForce(force * timeStep, p2 - m_body2->getPosition()); }
-
+	if (!m_body1->getIsKinematic()) { m_body1->applyForce(-force * timeStep, p1 - m_body1->getPosition()); }
+	if (!m_body2->getIsKinematic()) { m_body2->applyForce(force * timeStep, p2 - m_body2->getPosition()); }
 }
 
 void Spring::draw()
