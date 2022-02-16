@@ -6,7 +6,7 @@ class Plane :
     public PhysicsObject
 {
 public:
-    Plane(vec2 normal, float distance, vec4 colour) : PhysicsObject(ShapeType::PLANE, true, 1.0f), m_normal(normal), m_originDistance(distance), m_colour(colour) {}
+    Plane(vec2 normal, float distance, vec4 colour);
     ~Plane() {}
 
     virtual void fixedUpdate(vec2 gravity, float timeStep) {}
@@ -17,7 +17,6 @@ public:
 
 protected:
     vec2 m_normal;
-    vec4 m_colour;
     float m_originDistance;
 };
 

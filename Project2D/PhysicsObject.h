@@ -36,6 +36,7 @@ public:
 
 protected:
 	ShapeType m_shapeID;
+	vec4 m_colour;
 	bool m_isKinematic;
 	float m_elasticity;
 };

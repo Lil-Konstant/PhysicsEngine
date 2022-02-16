@@ -1,5 +1,12 @@
 #include "Plane.h"
 
+Plane::Plane(vec2 normal, float distance, vec4 colour) : PhysicsObject(ShapeType::PLANE, true, 1.0f)
+{
+	m_normal = normal;
+	m_originDistance = distance;
+	m_colour = colour;
+}
+
 void Plane::draw()
 {
 	float lineSegmentLength = 300;

@@ -302,7 +302,7 @@ bool PhysicsScene::OBB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 			// Total velocity of point in world space
 			vec2 cornerDisplacement = corner - obb->getPosition();
 			vec2 pointVelocity = obb->getVelocity() + (obb->getAngularVelocity() * vec2(-cornerDisplacement.y, cornerDisplacement.x));
-			// Find the component of the corner's velocity into the plan
+			// Find the component of the corner's velocity into the plane
 			float velocityIntoPlane = dot(pointVelocity, plane->getNormal());
 
 			// If the corner is below the plane and also moving into it

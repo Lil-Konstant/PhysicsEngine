@@ -20,6 +20,5 @@ public:
 
 protected:
     float m_radius;
-    vec4 m_colour;
 };
 

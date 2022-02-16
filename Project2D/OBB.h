@@ -27,6 +27,5 @@ public:
 
 protected:
     vec2 m_extents; // half-edge extents
-    vec4 m_colour;
 };
 
