@@ -16,6 +16,7 @@ public:
 	void resolveCollision(PhysicsObject* actor2, vec2 contact, vec2 collisionNormal = vec2(0,0));
 
 	vec2 toWorld(vec2 localPoint) { return m_position + (localPoint.x * m_localX) + (localPoint.y * m_localY); }
+	vec2 toLocal(vec2 worldPoint) { return vec2(dot(worldPoint - m_position, m_localX), dot(worldPoint - m_position, m_localY)); }
 
 	// Getters
 	float getKineticEnergy() { return 0.5f * m_mass * glm::length(m_velocity) * glm::length(m_velocity); }

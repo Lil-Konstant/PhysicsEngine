@@ -2,7 +2,7 @@
 
 PhysicsScene::PhysicsScene()
 {
-	setTimeStep(0.02f);
+	setTimeStep(0.01f);
 	setGravity(vec2(0, 0.0f));
 }
 
@@ -413,20 +413,13 @@ bool PhysicsScene::OBB2OBB(PhysicsObject* obj1, PhysicsObject* obj2)
 	return false;
 }
 
-PhysicsObject* PhysicsScene::objectUnderPoint(vec2 point)
+RigidBody* PhysicsScene::objectUnderPoint(vec2 point)
 {
 	for (auto actor : m_actors)
 	{
 		if (actor->isInside(point))
 		{
-			RigidBody* rig = dynamic_cast<RigidBody*>(actor);
-			if (rig)
-			{
-				rig->setVelocity(vec2(0, 0));
-				rig->setAngularVelocity(0.0f);
-			}
-			
-			return actor;
+			return dynamic_cast<RigidBody*>(actor);
 		}
 	}
 

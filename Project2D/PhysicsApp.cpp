@@ -21,6 +21,7 @@ PhysicsApp::~PhysicsApp() {
 
 bool PhysicsApp::startup() 
 {
+	m_playerSpring = nullptr;
 	constexpr float pi = glm::pi<float>();
 
 	// increase the 2D line count to maximize the number of objects we can draw
@@ -36,24 +37,28 @@ bool PhysicsApp::startup()
 
 	m_physicsScene = new PhysicsScene();
 
+	//createBridge({-40, 10}, 5, 30, 50.0f);
+
 	// Sphere creation
 	//m_physicsScene->addActor(new Sphere({ 50, -4 }, 0, { -10, 0 }, 2, 0.5f, 5, 1, { 0.5f, 1, 1, 1 }));
-	Sphere* sphere1 = new Sphere({ 0, 0 }, 0, { 0, 0 }, 1, 1, 10, 1, { 1, 0.5f, 1, 1 });
-	Sphere* sphere2 = new Sphere({ -20, 0 }, 0, { 0, 0 }, 1, 1, 10, 1, { 1, 1, 0.5f, 1 });
-	OBB* box1 = new OBB({ 50, 0 }, 5, 40, pi/3, { 0, 0 }, 0, 1, { 0.5f, 0.5f, 1, 1 });
-	sphere2->setIsKinematic(true);
-	Spring* spring = new Spring(sphere1, sphere2, { 1, 0, 0, 1 }, 10.0f, 25.0f, 0.5f, vec2(0, 0), vec2(sphere2->getRadius() / 2, 0));
-	Spring* spring2 = new Spring(sphere2, sphere2, { 1, 0, 0, 1 }, 10.0f, 25.0f, 0.5f, vec2(0, 0), vec2(sphere2->getRadius() / 2, 0));
+	//Sphere* sphere1 = new Sphere({ 0, 50 }, 0, { 0, 0 }, 1, 1, 25, 1, { 1, 0.5f, 1, 1 });
+	//m_physicsScene->addActor(sphere1);
+	//Sphere* sphere2 = new Sphere({ -20, 0 }, 0, { 0, 0 }, 1, 1, 10, 1, { 1, 1, 0.5f, 1 });
+	//sphere2->setIsKinematic(true);
+	//Spring* spring = new Spring(sphere1, sphere2, { 1, 0, 0, 1 }, 10.0f, 25.0f, 0.5f, vec2(0, 0), vec2(sphere2->getRadius() / 2, 0));
+	//Spring* spring2 = new Spring(sphere1, box1, { 1, 0, 0, 1 }, 10.0f, 25.0f, 0.5f, vec2(0, 0), vec2( 0, box1->getExtents().y));
 
 	//sphere->setIsKinematic(true);
-	m_physicsScene->addActor(sphere1);
+	/*m_physicsScene->addActor(sphere1);
 	m_physicsScene->addActor(sphere2);
+	m_physicsScene->addActor(box1);
 	m_physicsScene->addActor(spring);
+	m_physicsScene->addActor(spring2);*/
 	//m_physicsScene->addActor(new Sphere({ 0, 0 }, 0, { 15, 15 }, 0, 25, 25, 0.8f, { 0.5f, 0.5f, 0.5f, 1 }));
 	 
 
-	//m_physicsScene->addActor(new OBB({ 50, 0 }, 5, 40, 0, { 0, 0 }, 5, 1, { 0.5f, 0.5f, 1, 1 }));
-	//m_physicsScene->addActor(new OBB({ 20, 0 }, 10, 30, pi/4 + pi, { -12, 10}, 2.0f, 1, { 0.5f, 0.15f, 0.5f, 1 }));
+	m_physicsScene->addActor(new OBB({ 0, 0 }, 5, 40, 0, { 5, 0 }, 0.0f, 1, { 0.5f, 0.5f, 1, 1 }));
+	m_physicsScene->addActor(new OBB({ 20, 0 }, 10, 30, pi/4 + pi, { -12, 5}, 0.0f, 1, { 0.5f, 0.15f, 0.5f, 1 }));
 	//m_physicsScene->addActor(new OBB({ 50, 50 }, 2, 70, pi/4 + pi, { 20, -40}, 4.0f, 1, { 0.15f, 0.15f, 0.8f, 1 }));
 
 	//m_physicsScene->addActor(new AABB({ 0, 0 }, 40, 40, { 100, 40 }, 1, { 1, 0, 0, 1 }));
@@ -111,7 +116,19 @@ void PhysicsApp::update(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
 
-	if (input->isMouseButtonDown(0))
+
+
+	// Update the second contact point of the player spring with the current mouse pos this frame
+	if (m_playerSpring && m_playerSpring->isActive())
+	{
+		int xScreen, yScreen;
+		input->getMouseXY(&xScreen, &yScreen);
+		vec2 worldPos = screenToWorld(vec2(xScreen, yScreen));
+		m_playerSpring->setContact2(worldPos);
+	}
+
+	// If the player is left 
+	if (input->wasMouseButtonPressed(0))
 	{
 		// Get the mouse position in world coordinates and draw it as a circle on the screen
 		int xScreen, yScreen;
@@ -119,10 +136,25 @@ void PhysicsApp::update(float deltaTime) {
 		vec2 worldPos = screenToWorld(vec2(xScreen, yScreen));
 		aie::Gizmos::add2DCircle(worldPos, 1, 32, { 1, 0, 0, 1 });
 		
-		m_physicsScene->objectUnderPoint(worldPos);
-
-		//RigidBody* objectUnderneath = m_mphys
+		// Find the rig underneath the mouse
+		RigidBody* rig = m_physicsScene->objectUnderPoint(worldPos);
+		
+		if (!m_playerSpring && rig)
+		{
+			m_playerSpring = new Spring(rig, nullptr, { 1,0,0,1 }, 5.0f, 0.0f, 0.5f, rig->toLocal(worldPos), worldPos);
+			m_physicsScene->addActor(m_playerSpring);
+		}
+		else if (rig)
+		{
+			attachPlayerSpring(rig, rig->toLocal(worldPos), worldPos);
+		}
 	}
+	if (input->wasMouseButtonReleased(0) && m_playerSpring && m_playerSpring->isActive())
+	{
+		m_playerSpring->setActive(false);
+	}
+
+	
 }
 
 void PhysicsApp::draw() {
@@ -160,4 +192,49 @@ vec2 PhysicsApp::screenToWorld(vec2 screenPos)
 	worldPos.y *= 2.0f * extents / (aspectRatio * getWindowHeight());
 
 	return worldPos;
+}
+
+void PhysicsApp::attachPlayerSpring(RigidBody* other, vec2 contact, vec2 mousePos)
+{
+	m_playerSpring->setActive(true);
+	m_playerSpring->setBody1(other);
+	m_playerSpring->setBody2(nullptr);
+	m_playerSpring->setContact1(contact);
+	m_playerSpring->setContact2(mousePos);
+}
+
+void PhysicsApp::createBridge(vec2 startingPos, int segments, float spacing, float springConstant)
+{
+	vec2 boxPos = startingPos;
+	OBB* box;
+	OBB* previousBox;
+	Spring* spring;
+
+	float boxWidth = 20.0f;
+	float boxHeight = 3.0f;
+	for (int i = 0; i < segments; i++)
+	{
+		if (i == 0)
+		{
+			box = new OBB(boxPos, boxWidth, boxHeight, 0, { 0, 0 }, 0, 1.0f, { 1, 1, 1, 1 });
+			box->setIsKinematic(true);
+		}
+		else if (i == segments - 1)
+		{
+			box = new OBB(boxPos, boxWidth, boxHeight, 0, { 0, 0 }, 0, 1.0f, { 1, 1, 1, 1 });
+			box->setIsKinematic(true);
+			spring = new Spring(previousBox, box, { 165, 42, 42, 255 }, springConstant, spacing - boxWidth, 5.0f, vec2(previousBox->getExtents().x, 0), vec2(-box->getExtents().x, 0));
+			m_physicsScene->addActor(spring);
+		}
+		else
+		{
+			box = new OBB(boxPos, boxWidth, boxHeight, 0, { 0, 0 }, 0, 1.0f, { 0.2f, 0.3f, 1, 1 });
+			spring = new Spring(previousBox, box, { 165, 42, 42, 255 }, springConstant, spacing - boxWidth, 5.0f, vec2(previousBox->getExtents().x, 0), vec2(-box->getExtents().x, 0));
+			m_physicsScene->addActor(spring);
+		}
+		m_physicsScene->addActor(box);
+
+		previousBox = box;
+		boxPos.x += spacing;
+	}
 }

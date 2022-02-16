@@ -5,7 +5,7 @@ class Spring :
 {
 public:
     Spring(RigidBody* body1, RigidBody* body2, vec4 colour, float springCoefficient, float restLength = 0.0f, float damping = 0.1f, vec2 contact1 = vec2(0, 0), vec2 contact2 = vec2(0, 0));
-    ~Spring();
+    ~Spring() {}
 
     void fixedUpdate(vec2 gravity, float timeStep) override;
     void draw() override;
@@ -13,6 +13,15 @@ public:
     // Converts the contact points of each body into world coordinates and returns the position (or just returns m_contact if already in world coords)
     vec2 getContact1() { return m_body1 ? m_body1->toWorld(m_contact1) : m_contact1; }
     vec2 getContact2() { return m_body2 ? m_body2->toWorld(m_contact2) : m_contact2; }
+
+    void setBody1(RigidBody* rig) { m_body1 = rig; }
+    void setBody2(RigidBody* rig) { m_body2 = rig; }
+
+    void setContact1(vec2 contact) { m_contact1 = contact; }
+    void setContact2(vec2 contact) { m_contact2 = contact; }
+
+    bool isActive() { return m_isActive; }
+    void setActive(bool value) { m_isActive = value; }
 
 protected:
     // The two bodies this spring is attached between
@@ -28,6 +37,7 @@ protected:
     float m_restLength;
     float m_springCoefficient;
 
+    bool m_isActive;
     vec4 m_colour;
 };
 

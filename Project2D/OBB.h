@@ -23,6 +23,8 @@ public:
     float getHeight() const { return m_extents.y * 2; }
     vector<vec2> getCorners() const;
 
+    void setColour(vec4 colour) { m_colour = colour; }
+
 protected:
     vec2 m_extents; // half-edge extents
     vec4 m_colour;

@@ -43,7 +43,7 @@ public:
 	static bool sphere2OBB(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool OBB2OBB(PhysicsObject* obj1, PhysicsObject* obj2);
 
-	PhysicsObject* objectUnderPoint(vec2 point);
+	RigidBody* objectUnderPoint(vec2 point);
 
 	// Accessor functions for m_gravity
 	void setGravity(const vec2 gravity) { m_gravity = gravity; };
