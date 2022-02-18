@@ -4,6 +4,10 @@
 
 using namespace std;
 
+/// <summary>
+/// OBB is a collision primative class that implements the internal structure of a rotatable 2D box, as well
+/// as the logic for determining if another OBB's corners overlaps with this OBB.
+/// </summary>
 class OBB :
     public RigidBody
 {
@@ -12,8 +16,8 @@ public:
     ~OBB() {}
 
     void draw() override;
-    bool isInside(vec2 point) override;
 
+    bool isInside(vec2 point) override;
     // Used for OBB2OBB collision detection
     bool checkOBBCorners(const OBB& obb, vec2& contact, int& numContacts, float& pen, vec2& edgeNormal);
 
@@ -22,7 +26,7 @@ public:
     float getWidth() const { return m_extents.x * 2; }
     float getHeight() const { return m_extents.y * 2; }
     vector<vec2> getCorners() const;
-
+    // Setters
     void setColour(vec4 colour) { m_colour = colour; }
 
 protected:

@@ -18,7 +18,7 @@ public:
     void fixedUpdate(vec2 gravity, float timeStep) override;
     void draw() override;
 
-    // Converts the contact points of each body into world coordinates and returns the position (or just returns m_contact if already in world coords)
+    // Converts the local contact points of each body into world coordinates and returns the position (or just returns m_contact if already in world coords)
     vec2 getContact1() { return m_body1 ? m_body1->toWorld(m_contact1) : m_contact1; }
     vec2 getContact2() { return m_body2 ? m_body2->toWorld(m_contact2) : m_contact2; }
 

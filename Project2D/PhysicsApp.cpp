@@ -41,7 +41,8 @@ bool PhysicsApp::startup()
 
 	// Sphere creation
 	//m_physicsScene->addActor(new Sphere({ 50, -4 }, 0, { -10, 0 }, 2, 0.5f, 5, 1, { 0.5f, 1, 1, 1 }));
-	//Sphere* sphere1 = new Sphere({ 0, 50 }, 0, { 0, 0 }, 1, 1, 25, 1, { 1, 0.5f, 1, 1 });
+	Sphere* sphere1 = new Sphere({ 0, 50 }, 0, { 0, 0 }, 1, 1, 25, 1, { 1, 0.5f, 1, 1 });
+	m_physicsScene->addActor(sphere1);
 	//m_physicsScene->addActor(sphere1);
 	//Sphere* sphere2 = new Sphere({ -20, 0 }, 0, { 0, 0 }, 1, 1, 10, 1, { 1, 1, 0.5f, 1 });
 	//sphere2->setIsKinematic(true);
