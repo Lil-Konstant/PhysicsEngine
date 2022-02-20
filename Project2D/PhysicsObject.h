@@ -39,8 +39,10 @@ public:
 	int getShapeID() { return static_cast<int>(m_shapeID); }
 	bool getIsKinematic() { return m_isKinematic; }
 	float getElasticity() { return m_elasticity; }
+	vec4 getColour() { return m_colour; }
 	// Setters
 	void setIsKinematic(bool value) { m_isKinematic = value; }
+	void setColour(vec4 colour) { m_colour = colour; }
 
 protected:
 	ShapeType m_shapeID;

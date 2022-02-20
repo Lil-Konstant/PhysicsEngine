@@ -16,12 +16,10 @@ public:
 
     // Draws the sphere class as a 2D circle
     void draw() override;
-
     bool isInside(vec2 point) override;
     
     // Getters
     float getRadius() { return m_radius; }
-    vec4 getColour() { return m_colour; }
 
 protected:
     float m_radius;
