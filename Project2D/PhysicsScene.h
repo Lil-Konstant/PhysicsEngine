@@ -1,6 +1,5 @@
 #pragma once
 
-// Include the OpenGL maths for vec2's and the std lib vectors
 #include <vector>
 #include "glm/glm.hpp"
 #include "PhysicsObject.h"
@@ -12,6 +11,13 @@
 using namespace std;
 using namespace glm;
 
+/// <summary>
+/// PhysicsScene is a manager class that maintains a list of all actors currently in the scene,
+/// and is responsible for triggering their updates, draws, as well as checking for collisions
+/// between all actors (and triggering collision resolution if collision is occurring). The class
+/// also implements a fixed time step that is used to trigger the fixedUpdate on actors at a
+/// set regular intervel.
+/// </summary>
 class PhysicsScene
 {
 public:

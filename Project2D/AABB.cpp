@@ -1,4 +1,5 @@
 #include "AABB.h"
+// --------------------- NOT USED IN SUBMISSION ----------------------- //
 
 AABB::AABB(vec2 position, float width, float height, vec2 velocity, float mass, vec4 colour) : RigidBody(ShapeType::AABB, position, 0, velocity, 0, mass)
 {
@@ -39,3 +40,4 @@ vec2 AABB::getExtents()
 	return m_extents;
 }
 
+// --------------------- NOT USED IN SUBMISSION ----------------------- //

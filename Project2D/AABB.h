@@ -2,6 +2,8 @@
 #include "RigidBody.h"
 #include <vector>
 
+// --------------------- NOT USED IN SUBMISSION ----------------------- //
+
 using namespace std;
 
 class AABB :
@@ -22,3 +24,4 @@ protected:
     vec4 m_colour;
 };
 
+// --------------------- NOT USED IN SUBMISSION ----------------------- //

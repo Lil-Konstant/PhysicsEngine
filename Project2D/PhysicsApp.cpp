@@ -19,6 +19,12 @@ PhysicsApp::~PhysicsApp() {
 
 }
 
+/// <summary>
+/// startup() is called once at the start of the application, and instantiates a new renderer
+/// and physics scene. The function then populates the physics scene with two OBB shapes, and one
+/// sphere, as well as four planes that act as borders of the scene.
+/// </summary>
+/// <returns></returns>
 bool PhysicsApp::startup() 
 {
 	m_playerSpring = nullptr;
@@ -29,40 +35,18 @@ bool PhysicsApp::startup()
 
 	m_2dRenderer = new aie::Renderer2D();
 
-	m_texture = new aie::Texture("./textures/numbered_grid.tga");
-	m_shipTexture = new aie::Texture("./textures/ship.png");
 	m_font = new aie::Font("./font/consolas.ttf", 32);
 	
 	m_timer = 0;
 
 	m_physicsScene = new PhysicsScene();
 
-	//createBridge({-40, 10}, 5, 30, 50.0f);
-
 	// Sphere creation
-	//m_physicsScene->addActor(new Sphere({ 50, -4 }, 0, { -10, 0 }, 2, 0.5f, 5, 1, { 0.5f, 1, 1, 1 }));
-	Sphere* sphere1 = new Sphere({ 0, 50 }, 0, { 0, 0 }, 1, 1, 25, 1, { 1, 0.5f, 1, 1 });
-	m_physicsScene->addActor(sphere1);
-	//m_physicsScene->addActor(sphere1);
-	//Sphere* sphere2 = new Sphere({ -20, 0 }, 0, { 0, 0 }, 1, 1, 10, 1, { 1, 1, 0.5f, 1 });
-	//sphere2->setIsKinematic(true);
-	//Spring* spring = new Spring(sphere1, sphere2, { 1, 0, 0, 1 }, 10.0f, 25.0f, 0.5f, vec2(0, 0), vec2(sphere2->getRadius() / 2, 0));
-	//Spring* spring2 = new Spring(sphere1, box1, { 1, 0, 0, 1 }, 10.0f, 25.0f, 0.5f, vec2(0, 0), vec2( 0, box1->getExtents().y));
-
-	//sphere->setIsKinematic(true);
-	/*m_physicsScene->addActor(sphere1);
-	m_physicsScene->addActor(sphere2);
-	m_physicsScene->addActor(box1);
-	m_physicsScene->addActor(spring);
-	m_physicsScene->addActor(spring2);*/
-	//m_physicsScene->addActor(new Sphere({ 0, 0 }, 0, { 15, 15 }, 0, 25, 25, 0.8f, { 0.5f, 0.5f, 0.5f, 1 }));
+	m_physicsScene->addActor(new Sphere({ 0, 0 }, 0, { 5, 10 }, 1, 5, 25, 1, { 1, 0.5f, 1, 1 }));
 	 
-
-	m_physicsScene->addActor(new OBB({ 0, 0 }, 5, 40, 0, { 5, 0 }, 0.0f, 1, { 0.5f, 0.5f, 1, 1 }));
-	m_physicsScene->addActor(new OBB({ 20, 0 }, 10, 30, pi/4 + pi, { -12, 5}, 0.0f, 1, { 0.5f, 0.15f, 0.5f, 1 }));
-	//m_physicsScene->addActor(new OBB({ 50, 50 }, 2, 70, pi/4 + pi, { 20, -40}, 4.0f, 1, { 0.15f, 0.15f, 0.8f, 1 }));
-
-	//m_physicsScene->addActor(new AABB({ 0, 0 }, 40, 40, { 100, 40 }, 1, { 1, 0, 0, 1 }));
+	// OBB creation
+	m_physicsScene->addActor(new OBB({ -50, 0 }, 5, 40, 0, { -25, 10 }, 0.5f, 1, { 0.5f, 0.5f, 1, 1 }));
+	m_physicsScene->addActor(new OBB({ 50, 0 }, 10, 30, pi/4 + pi, { -12, 5}, 0.0f, 1, { 0.5f, 0.15f, 0.5f, 1 }));
 
 	// build the walls of the screen
 	m_physicsScene->addActor(new Plane({ 0, 1 }, -51, {0.5f, 0.5f, 1, 0.5}));
@@ -73,14 +57,25 @@ bool PhysicsApp::startup()
 	return true;
 }
 
+/// <summary>
+/// shutdown() simply deletes any allocated memory used in the app.
+/// </summary>
 void PhysicsApp::shutdown() {
 	
 	delete m_font;
-	delete m_texture;
-	delete m_shipTexture;
 	delete m_2dRenderer;
+	delete m_physicsScene;
 }
 
+/// <summary>
+/// update() is called by the aie::Application loop, and first checks for
+/// user arrow key input to move the camera port around. The function then
+/// checks for left mouse input to attempt to attach the player spring to
+/// a rigid body in the scene. If the player spring is already active then
+/// the function simply updates the second contact point with the current
+/// mouse position so the spring always connects between the mouse and the
+/// rigid body.
+/// </summary>
 void PhysicsApp::update(float deltaTime) {
 
 	m_timer += deltaTime;
@@ -117,8 +112,6 @@ void PhysicsApp::update(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
 
-
-
 	// Update the second contact point of the player spring with the current mouse pos this frame
 	if (m_playerSpring && m_playerSpring->isActive())
 	{
@@ -128,7 +121,7 @@ void PhysicsApp::update(float deltaTime) {
 		m_playerSpring->setContact2(worldPos);
 	}
 
-	// If the player is left 
+	// If the player is left clicking
 	if (input->wasMouseButtonPressed(0))
 	{
 		// Get the mouse position in world coordinates and draw it as a circle on the screen
@@ -140,16 +133,19 @@ void PhysicsApp::update(float deltaTime) {
 		// Find the rig underneath the mouse
 		RigidBody* rig = m_physicsScene->objectUnderPoint(worldPos);
 		
+		// If the player spring is yet to be initialised, create a new spring with one rig attachment, attached to the player mouse
 		if (!m_playerSpring && rig)
 		{
 			m_playerSpring = new Spring(rig, nullptr, { 1,0,0,1 }, 5.0f, 0.0f, 0.5f, rig->toLocal(worldPos), worldPos);
 			m_physicsScene->addActor(m_playerSpring);
 		}
+		// Otherwise if the player spring already exists, reassign it to this rig
 		else if (rig)
 		{
 			attachPlayerSpring(rig, rig->toLocal(worldPos), worldPos);
 		}
 	}
+	// If the player has released left mouse this update, deactivate the player spring
 	if (input->wasMouseButtonReleased(0) && m_playerSpring && m_playerSpring->isActive())
 	{
 		m_playerSpring->setActive(false);
@@ -158,6 +154,11 @@ void PhysicsApp::update(float deltaTime) {
 	
 }
 
+/// <summary>
+/// draw() simply displays the fps, escape to quit and info text on the screen, and then
+/// calls aie::Gizmos::draw2D, which draws all shapes that have been added to the most
+/// recent draw call.
+/// </summary>
 void PhysicsApp::draw() {
 
 	// wipe the screen to the background colour
@@ -171,15 +172,22 @@ void PhysicsApp::draw() {
 	sprintf_s(fps, 32, "FPS: %i", getFPS());
 	m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
 	m_2dRenderer->drawText(m_font, "Press ESC to quit!", 0, 720 - 64);
+	m_2dRenderer->drawText(m_font, "Click and drag on shapes to pull them!", 50, 50);
 
 	static float aspectRatio = 16 / 9.f;
 	aie::Gizmos::draw2D(glm::ortho<float>(-extents, extents, -extents / aspectRatio, extents / aspectRatio, -1.0f, 1.0f));
-
 
 	// done drawing sprites
 	m_2dRenderer->end();
 }
 
+/// <summary>
+/// screenToWorld is a utility function that takes a vec2 screen position as input,
+/// and converts it into the orthographic world coordinates of the game world, and
+/// returns this conversion.
+/// </summary>
+/// <param name="screenPos">The screen coordinates to convert.</param>
+/// <returns>A converted vec2 in world coordinates.</returns>
 vec2 PhysicsApp::screenToWorld(vec2 screenPos)
 {
 	vec2 worldPos = screenPos;
@@ -195,6 +203,13 @@ vec2 PhysicsApp::screenToWorld(vec2 screenPos)
 	return worldPos;
 }
 
+/// <summary>
+/// attachPlayerSpring simply sets the player spring to active and attaches it 
+/// to the inputted rigidbody, between the inputted contact point and mouse position
+/// </summary>
+/// <param name="other">The rigid body to attach the player spring to.</param>
+/// <param name="contact">The point on the rigid body to attach to.</param>
+/// <param name="mousePos">The position of the mouse to attach to.</param>
 void PhysicsApp::attachPlayerSpring(RigidBody* other, vec2 contact, vec2 mousePos)
 {
 	m_playerSpring->setActive(true);
@@ -202,40 +217,4 @@ void PhysicsApp::attachPlayerSpring(RigidBody* other, vec2 contact, vec2 mousePo
 	m_playerSpring->setBody2(nullptr);
 	m_playerSpring->setContact1(contact);
 	m_playerSpring->setContact2(mousePos);
-}
-
-void PhysicsApp::createBridge(vec2 startingPos, int segments, float spacing, float springConstant)
-{
-	vec2 boxPos = startingPos;
-	OBB* box;
-	OBB* previousBox;
-	Spring* spring;
-
-	float boxWidth = 20.0f;
-	float boxHeight = 3.0f;
-	for (int i = 0; i < segments; i++)
-	{
-		if (i == 0)
-		{
-			box = new OBB(boxPos, boxWidth, boxHeight, 0, { 0, 0 }, 0, 1.0f, { 1, 1, 1, 1 });
-			box->setIsKinematic(true);
-		}
-		else if (i == segments - 1)
-		{
-			box = new OBB(boxPos, boxWidth, boxHeight, 0, { 0, 0 }, 0, 1.0f, { 1, 1, 1, 1 });
-			box->setIsKinematic(true);
-			spring = new Spring(previousBox, box, { 165, 42, 42, 255 }, springConstant, spacing - boxWidth, 5.0f, vec2(previousBox->getExtents().x, 0), vec2(-box->getExtents().x, 0));
-			m_physicsScene->addActor(spring);
-		}
-		else
-		{
-			box = new OBB(boxPos, boxWidth, boxHeight, 0, { 0, 0 }, 0, 1.0f, { 0.2f, 0.3f, 1, 1 });
-			spring = new Spring(previousBox, box, { 165, 42, 42, 255 }, springConstant, spacing - boxWidth, 5.0f, vec2(previousBox->getExtents().x, 0), vec2(-box->getExtents().x, 0));
-			m_physicsScene->addActor(spring);
-		}
-		m_physicsScene->addActor(box);
-
-		previousBox = box;
-		boxPos.x += spacing;
-	}
 }
